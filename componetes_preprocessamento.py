@@ -1,10 +1,12 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 import nltk
 import re
+import pandas as pd
 import numpy as np
 from nltk.corpus import stopwords
 from nltk.stem import RSLPStemmer
 from nltk.tokenize import word_tokenize
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 # from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 nltk.download('rslp')
 nltk.download('stopwords')
@@ -114,9 +116,17 @@ class Joiner(BaseEstimator, TransformerMixin):
   def fit_transform(self, X, y=None):
       return self.fit(X, y).transform(X, y)
 
-# cleaner = Cleaner()
-# X = np.arange(0, 100, dtype=int)
-# X = X.reshape((10,10))
-# y = np.arange(1, 10, dtype=int)
-# print(X.T, "\n", y)
-# print(cleaner.fit(X, y))
+def pega_resultados(modelo, otimizador, y_test, y_predict, metrica_base, hiper):
+  acc = accuracy_score(y_test, y_predict)
+  f1 = f1_score(y_test, y_predict, average=None).mean()
+  p = precision_score(y_test, y_predict, average=None).mean()
+  r = recall_score(y_test, y_predict, average=None).mean()
+  return [modelo, otimizador, acc , f1, p, r, metrica_base, hiper]
+
+
+def salvando_em_arquivo(nome_do_arquivo, resultado):
+  resultado_pd = pd.DataFrame(resultado)
+  resultado_pd.columns = ["modelo", "otimizador",  "acuracia", "f1","precisao", "revocacao",  "metricas", "hiper paramentros" ]
+  for coluna in ["acuracia", "f1","precisao", "revocacao"]:
+    resultado_pd[coluna] = resultado_pd[coluna].apply(lambda x:  "%.2f" % (float(x)*100))  
+  resultado_pd.to_csv(nome_do_arquivo) 

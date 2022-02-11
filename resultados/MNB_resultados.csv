@@ -1,0 +1,5 @@
+,modelo,otimizador,acuracia,f1,precisao,revocacao,metricas,hiper paramentros
+0,mnb,Grid Search,72.99,65.81,68.19,66.25,acurracia,"{'alpha': 1.08, 'fit_prior': True}"
+1,mnb,Grid Search,71.65,66.28,66.62,66.57,f1 score,"{'alpha': 0.28, 'fit_prior': False}"
+2,mnb,Randomized Search,71.79,66.37,66.75,66.68,acuracia,"{'fit_prior': False, 'alpha': 0.43}"
+3,mnb,Randomized Search,71.61,66.25,66.56,66.54,f1 score,"{'fit_prior': False, 'alpha': 0.43}"
