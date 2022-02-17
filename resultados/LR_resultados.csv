@@ -1,0 +1,5 @@
+,modelo,otimizador,acuracia,f1,precisao,revocacao,metricas,hiper paramentros
+0,lr,Grid Search,73.98,65.96,68.88,67.14,f1 score,"{'C': 1.623776739188721, 'penalty': 'l2', 'solver': 'newton-cg'}"
+1,lr,Grid Search,74.48,66.03,69.79,67.55,acuracia,"{'C': 0.615848211066026, 'penalty': 'l2', 'solver': 'saga'}"
+2,lr,Randomized Search,73.52,65.72,68.38,66.73,f1 score,"{'solver': 'saga', 'penalty': 'l2', 'C': 4.124626382901348}"
+3,lr,Randomized Search,70.66,62.99,64.67,63.61,acuracia,"{'solver': 'saga', 'penalty': 'l2', 'C': 888623.8162743407}"
