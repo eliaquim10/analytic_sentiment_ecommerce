@@ -1,0 +1,5 @@
+,modelo,otimizador,acuracia,f1,precisao,revocacao,metricas,hiper paramentros
+0,knn,Grid Search,67.28,56.52,59.65,58.77,Acuracia,"{'metric': 'euclidean', 'n_neighbors': 11}"
+1,knn,Grid Search,66.71,58.30,59.43,59.68,F1score,"{'metric': 'euclidean', 'n_neighbors': 5}"
+2,knn,Randomized Search,67.28,56.52,59.65,58.77,Acuracia,"{'n_neighbors': 11, 'metric': 'euclidean'}"
+3,knn,Randomized Search,67.21,57.44,59.77,59.19,F1score,"{'n_neighbors': 7, 'metric': 'euclidean'}"

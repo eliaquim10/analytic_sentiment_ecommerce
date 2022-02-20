@@ -1,0 +1,5 @@
+,modelo,otimizador,acuracia,f1,precisao,revocacao,metricas,hiper paramentros
+0,RF,Grid Search,72.07,63.10,66.02,64.95,Acuracia,"{'criterion': 'entropy', 'max_features': 'log2', 'n_estimators': 25}"
+1,RF,Grid Search,71.76,63.24,65.47,65.02,F1score,"{'criterion': 'gini', 'max_features': 'sqrt', 'n_estimators': 25}"
+2,RF,Randomized Search,71.96,63.26,65.91,65.15,Acuracia,"{'n_estimators': 25, 'max_features': 'sqrt', 'criterion': 'entropy'}"
+3,RF,Randomized Search,71.72,63.55,65.72,65.18,F1score,"{'n_estimators': 21, 'max_features': 'sqrt', 'criterion': 'gini'}"
