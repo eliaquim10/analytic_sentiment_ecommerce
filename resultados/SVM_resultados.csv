@@ -1,0 +1,5 @@
+,modelo,otimizador,acuracia,f1,precisao,revocacao,metricas,hiper paramentros
+0,svm,Grid Search,74.83,66.94,70.12,68.12,f1 score,"{'C': 2, 'kernel': 'rbf'}"
+1,svm,Grid Search,75.00,66.43,70.64,68.06,accuracy,"{'C': 1, 'kernel': 'rbf'}"
+2,svm,Random Search,74.38,66.81,69.27,67.84,f1 score,"{'kernel': 'rbf', 'C': 3}"
+3,svm,Random Search,75.00,66.43,70.64,68.06,accuracy,"{'kernel': 'rbf', 'C': 1}"
