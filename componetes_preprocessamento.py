@@ -1,4 +1,4 @@
-from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.base import BaseEstimator, TransformerMixin, ClassifierMixin
 import nltk
 import re
 import pandas as pd
@@ -7,6 +7,11 @@ from nltk.corpus import stopwords
 from nltk.stem import RSLPStemmer
 from nltk.tokenize import word_tokenize
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.preprocessing.text import Tokenizer
+from keras.utils import np_utils
+import tensorflow as tf
+
 # from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 nltk.download('rslp')
 nltk.download('stopwords')
@@ -47,8 +52,6 @@ class Cleaner(BaseEstimator, TransformerMixin):
   
   
   
-  def fit_transform(self, X, y=None):
-      return self.fit(X, y).transform(X, y)
 
 class RemoveStopWords(BaseEstimator, TransformerMixin):
   def __init__(self, lingua):
@@ -65,8 +68,6 @@ class RemoveStopWords(BaseEstimator, TransformerMixin):
       review_transformando.append(self.removeStopwords(review))
     return review_transformando
   
-  def fit_transform(self, X, y=None):
-      return self.fit(X, y).transform(X, y)
 
 class Tokenizador(BaseEstimator, TransformerMixin):
   def __init__(self, lingua):
@@ -80,8 +81,6 @@ class Tokenizador(BaseEstimator, TransformerMixin):
       review_transformando.append(word_tokenize(review, language=self.lingua))
     return review_transformando
   
-  def fit_transform(self, X, y=None):
-      return self.fit(X, y).transform(X, y)
 
 class Stemmer(BaseEstimator, TransformerMixin):
   def __init__(self):
@@ -96,9 +95,6 @@ class Stemmer(BaseEstimator, TransformerMixin):
     for review in X:
       review_transformando.append(self.useStem(review))
     return review_transformando
-  
-  def fit_transform(self, X, y=None):
-      return self.fit(X, y).transform(X, y)
 
 class Joiner(BaseEstimator, TransformerMixin):
   def __init__(self):
@@ -112,9 +108,90 @@ class Joiner(BaseEstimator, TransformerMixin):
     for review in X:
       review_transformando.append(self.juntar(review))
     return review_transformando
+
+def to_dense(array):
+  indices = []
+  values = []
+  dense_shape=[len(array), len(array[0])]
+  for i, j in zip(range(len(array)), range(len(array[0]))):
+    if(array[i][j] != 0):
+      indices.append([i, j])
+      values.append(array[i][j])
+
+  return tf.SparseTensor(indices=indices,
+                      values=values,
+                      dense_shape=dense_shape)
+
+class Padding(BaseEstimator, TransformerMixin):
+  def __init__(self, max_length, trunc_type):
+    super()
+    self.max_length = max_length
+    self.trunc_type = trunc_type
+  def fit(self, X, y=None):
+      return self
+  def transform(self, X, y=None):
+    new_X = pad_sequences(X, dtype="float16", maxlen=self.max_length)
+    # return tf.sparse.from_dense(new_X)
+    return new_X
   
   def fit_transform(self, X, y=None):
-      return self.fit(X, y).transform(X, y)
+    new_X = pad_sequences(X, dtype="float16", maxlen=self.max_length, truncating=self.trunc_type)
+    return new_X
+
+class Convert(BaseEstimator, TransformerMixin):
+  def __init__(self):
+    super()
+  def fit(self, X, y=None):
+      return self
+  def transform(self, X, y=None):
+    
+    # return tf.sparse.reorder(to_dense(X), name=None)
+    print(type(X.todense()))
+    return np.array(X.todense())
+
+class OurTokenizer():
+  def __init__(self, vocab_size, oov_tok):
+    super()
+    self.tokenizer = Tokenizer(num_words = vocab_size, oov_token=oov_tok)
+  def fit(self, X, y=None):
+    self.tokenizer.fit_on_texts(X)
+    return self
+  def transform(self, X, y=None):
+    return self.tokenizer.texts_to_sequences(X)
+
+
+class MyModel(ClassifierMixin, BaseEstimator):
+  def __init__(self, model, heigth, batch_size, epochs, return_sequences =True, **kargs ):
+    super(**kargs)
+    self.model = model
+    self.heigth = heigth
+    self.batch_size = batch_size
+    self.epochs = epochs
+    self.return_sequences = return_sequences
+
+  def fit(self, X, y=None):
+    if (self.return_sequences):
+      y = np.array([yi * np.ones((self.heigth, len(yi) )) for yi in y])
+      
+    self.model.fit(X, y, self.batch_size, self.epochs)
+    return self
+  
+  def _get_params(self, deep):
+    return self.model.get_params(deep)
+  def transforma(self, y):
+    if (not self.return_sequences):
+      uniques = np.arange(len(y))
+      return uniques[y.argmax(1)]   
+
+    uniques = np.arange(len(y[0]))    
+    return uniques[y.argmax(1)]
+
+  def predict(self, X):
+    y = self.model.predict(X)
+    print(y[0])
+    if (self.return_sequences):
+      y = np.array([yi[0] for yi in y])
+    return self.transforma(y)
 
 def pega_resultados(modelo, otimizador, y_test, y_predict, metrica_base, hiper):
   acc = accuracy_score(y_test, y_predict)
