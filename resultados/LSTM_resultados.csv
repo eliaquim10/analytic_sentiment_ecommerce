@@ -1,0 +1,5 @@
+,modelo,otimizador,acuracia,f1,precisao,revocacao,metricas,hiper paramentros
+0,lstm,Grid Search,62.96,46.38,40.97,53.45,Acuracia,"{'activation': 'tanh', 'neurons': 16}"
+1,lstm,Random Search,62.96,46.38,40.97,53.45,Acuracia,"{'neurons': 16, 'activation': 'tanh'}"
+2,lstm,Random Search,62.96,46.38,40.97,53.45,F1-Score,"{'neurons': 16, 'activation': 'tanh'}"
+3,lstm,Grid Search,62.96,46.38,40.97,53.45,F1-Score,"{'activation': 'tanh', 'neurons': 16}"
